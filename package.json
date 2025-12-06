@@ -1,0 +1,31 @@
+{
+  "name": "codello-server",
+  "version": "1.0.0",
+  "description": "codello server project",
+  "keywords": [
+    "node.js",
+    "express.js",
+    "mongodb",
+    "mongoose"
+  ],
+  "license": "ISC",
+  "author": "Akhilesh Yadav <akhileshkumaryadav2407@gmail.com>",
+  "contributors": [
+    "Akhilesh Yadav <email_here of @github.com>"
+  ],
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/app.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
