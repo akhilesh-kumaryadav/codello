@@ -15,6 +15,10 @@ app.get('/friend-request', (req: Request, res: Response) => {
     res.send("This is the friend request page of the codello.");
 })
 
+app.get('/find-friends', (req: Request, res: Response) => {
+    res.send("This is the find friend page of the codello.");
+})
+
 
 app.listen(port, () => {
     console.log("Codello server is up and running.")
