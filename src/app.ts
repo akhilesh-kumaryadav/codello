@@ -1,32 +1,19 @@
 import express, { NextFunction, Request, Response } from 'express';
 
+import { adminAuth, userAuth } from './middlewares/auth';
+
 const app = express();
 const port = 592;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('This is the home page of the codello.');
+app.use('/admin', adminAuth);
+
+app.get('/admin/getAllData', (req: Request, res: Response) => {
+  res.send('Admin get all data.');
 });
 
-app.get(
-  '/profile',
-  [
-    (req: Request, res: Response, next: NextFunction) => {
-      res.send('This is the profile page of the codello. 1');
-      next();
-    },
-    (req: Request, res: Response, next: NextFunction) => {
-      res.send('This is the profile page of the codello. 2');
-      next();
-    },
-  ],
-  (req: Request, res: Response, next: NextFunction) => {
-    res.send('This is the profile page of the codello. 3');
-    next();
-  },
-  (req: Request, res: Response) => {
-    res.send('This is the next profile page of the codello. 4');
-  },
-);
+app.get('/user', userAuth, (req: Request, res: Response) => {
+  res.send('User data send.');
+});
 
 app.listen(port, () => {
   console.log(
