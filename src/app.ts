@@ -58,6 +58,9 @@ app.get('/feeds', async (req: Request, res: Response) => {
 
 app.delete('/user', async (req: Request, res: Response) => {
   const { userId } = req.body;
+  if (!userId) {
+    res.status(400).send('User id need to delete the user.');
+  }
 
   try {
     await Users.findByIdAndDelete(userId);
