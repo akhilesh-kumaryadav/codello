@@ -56,6 +56,19 @@ app.get('/feeds', async (req: Request, res: Response) => {
   }
 });
 
+app.delete('/user', async (req: Request, res: Response) => {
+  const { userId } = req.body;
+
+  try {
+    await Users.findByIdAndDelete(userId);
+
+    res.send('User deleted successfully.');
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).send('Something went wrong.');
+  }
+});
+
 connectCluster()
   .then(() => {
     console.log('Database connection established.');
