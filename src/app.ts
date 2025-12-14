@@ -2,20 +2,14 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import connectCluster from './configs/database';
 import User from './models/user';
-import { Error } from 'mongoose';
 
 const app = express();
 const port = 592;
 
+app.use(express.json());
+
 app.post('/signup', async (req: Request, res: Response) => {
-  const user = new User({
-    firstName: 'akhilesh',
-    lastName: 'Yadav',
-    email: 'akhilesh@yadav.com',
-    password: 'akhilesh@24',
-    age: 26,
-    gender: 'm',
-  });
+  const user = new User(req.body);
 
   try {
     await user.save();
