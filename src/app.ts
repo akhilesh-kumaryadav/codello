@@ -72,6 +72,22 @@ app.delete('/user', async (req: Request, res: Response) => {
   }
 });
 
+app.patch('/user', async (req: Request, res: Response) => {
+  const { userId } = req.body;
+  if (!userId) {
+    res.status(400).send('User id is needed to update the user.');
+  }
+
+  try {
+    await Users.findByIdAndUpdate({ _id: userId }, req.body);
+
+    res.send('User updated successfully');
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).send('Something went wrong.');
+  }
+});
+
 connectCluster()
   .then(() => {
     console.log('Database connection established.');
