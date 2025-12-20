@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
 
 import connectCluster from './configs/database';
 import Users from './models/user/user';
@@ -8,8 +10,10 @@ import loginInValidator from './utils/loginInValidator';
 
 const app = express();
 const port = 592;
+const JWT_SECRET = 'akhilesh@HFT';
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post('/signup', async (req: Request, res: Response) => {
   try {
@@ -50,7 +54,6 @@ app.post('/login', async (req: Request, res: Response) => {
         password: 1,
       },
     );
-    console.log({ user });
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -60,9 +63,36 @@ app.post('/login', async (req: Request, res: Response) => {
       throw new Error('Invalid credentials');
     }
 
+    const token = await jwt.sign({ _id: user._id }, JWT_SECRET);
+    res.cookie('token', token);
+
     res.send('Login successfully!!!');
   } catch (error: any) {
-    res.status(400).send(error.message);
+    res.status(400).send(error.message ?? 'Something went wrong.');
+  }
+});
+
+app.get('/profile', async (req: Request, res: Response) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    if (!token) {
+      throw new Error('Unauthorized.');
+    }
+
+    const decodedToken = (await jwt.verify(token, JWT_SECRET)) as {
+      _id: string;
+    };
+
+    const { _id } = decodedToken;
+    const user = await Users.findById(_id);
+    if (!user) {
+      throw new Error('Unauthorized.');
+    }
+
+    res.send(user);
+  } catch (error: any) {
+    res.status(400).send(error.message ?? 'Something went wrong.');
   }
 });
 
@@ -81,9 +111,8 @@ app.get('/user', async (req: Request, res: Response) => {
     }
 
     res.send(user);
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).send('Something went wrong. Please try again later.');
+  } catch (error: any) {
+    res.status(500).send(error.message ?? 'Something went wrong');
   }
 });
 
@@ -96,9 +125,8 @@ app.get('/feeds', async (req: Request, res: Response) => {
     }
 
     res.send(users);
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).send('Something went wrong. Please try again later.');
+  } catch (error: any) {
+    res.status(500).send(error.message ?? 'Something went wrong');
   }
 });
 
@@ -113,8 +141,7 @@ app.delete('/user', async (req: Request, res: Response) => {
 
     res.send('User deleted successfully.');
   } catch (error: any) {
-    console.log(error);
-    res.status(500).send('Something went wrong.');
+    res.status(500).send(error.message ?? 'Something went wrong.');
   }
 });
 
@@ -138,15 +165,14 @@ app.patch('/user/:id', async (req: Request, res: Response) => {
     const isUpdated = await Users.findByIdAndUpdate({ _id: userId }, data, {
       runValidators: true,
     });
-    console.log({ isUpdated });
+
     if (!isUpdated) {
       throw new Error('User not found.');
     }
 
     res.send('User updated successfully');
   } catch (error: any) {
-    console.log(error);
-    res.status(500).send(`Update failed. Reason: ${error.message}`);
+    res.status(500).send(error.message ?? 'Something went wrong.');
   }
 });
 
