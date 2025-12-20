@@ -1,7 +1,9 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
 
 import connectCluster from './configs/database';
-import Users from './models/user';
+import Users from './models/user/user';
+import signUpValidator from './utils/signUpValidator';
 
 const app = express();
 const port = 592;
@@ -9,9 +11,24 @@ const port = 592;
 app.use(express.json());
 
 app.post('/signup', async (req: Request, res: Response) => {
-  const user = new Users(req.body);
-
   try {
+    signUpValidator({ bodyParams: req.body });
+
+    const { firstName, lastName, email, password, gender, age, photoUrl } =
+      req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new Users({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      gender,
+      age,
+      photoUrl,
+    });
+
     await user.save();
 
     res.send('User Added To the database.');
