@@ -1,6 +1,7 @@
 import validator from 'validator';
 
 import type { UserSchema } from '../models/collectionTypes/user';
+import validateMandatoryFields from './validateMandatoryFields';
 
 const MANDATORY_FIELDS = {
   firstName: {
@@ -21,22 +22,12 @@ const MANDATORY_FIELDS = {
   },
 };
 
-function validateMandatoryFields({ bodyParams }: { bodyParams: UserSchema }) {
-  for (const field of Object.values(MANDATORY_FIELDS)) {
-    const value = bodyParams[field.key as keyof UserSchema];
-
-    if (value === null || value === undefined || value == '') {
-      throw new Error(`${field.label} is required.`);
-    }
-  }
-}
-
 export default function signUpValidator({
   bodyParams,
 }: {
   bodyParams: UserSchema;
 }) {
-  validateMandatoryFields({ bodyParams });
+  validateMandatoryFields({ data: bodyParams, MANDATORY_FIELDS });
 
   const { email, password, age, gender, photoUrl } = bodyParams;
 
