@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 
 const { Schema } = mongoose;
 
@@ -17,10 +18,24 @@ const schema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate: {
+        validator: (value: string) => {
+          return validator.isEmail(value);
+        },
+        message: (props: { value: string }) =>
+          `${props.value} is not have valid email address.`,
+      },
     },
     password: {
       type: String,
       required: [true, 'Password is required.'],
+      validate: {
+        validator: (value: string) => {
+          return validator.isStrongPassword(value);
+        },
+        message: (props: { value: string }) =>
+          `${props.value} is not a strong passwor.`,
+      },
     },
     age: {
       type: Number,
@@ -35,6 +50,16 @@ const schema = new Schema(
         },
         message: (props: { value: string }) =>
           `${props.value} is not a valid gender.`,
+      },
+    },
+    photoUrl: {
+      type: String,
+      validate: {
+        validator: (value: string) => {
+          return validator.isURL(value);
+        },
+        message: (props: { value: string }) =>
+          `${props.value} is not a valid URL.`,
       },
     },
   },
