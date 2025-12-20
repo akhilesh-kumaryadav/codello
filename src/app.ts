@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import connectCluster from './configs/database';
 import Users from './models/user/user';
 import signUpValidator from './utils/signUpValidator';
+import loginInValidator from './utils/loginInValidator';
 
 const app = express();
 const port = 592;
@@ -34,6 +35,34 @@ app.post('/signup', async (req: Request, res: Response) => {
     res.send('User Added To the database.');
   } catch (error: any) {
     res.status(400).send('Error in saving the user: ' + error.message);
+  }
+});
+
+app.post('/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  try {
+    loginInValidator({ credentials: req.body });
+
+    const user = await Users.findOne(
+      { email },
+      {
+        password: 1,
+      },
+    );
+    console.log({ user });
+    if (!user) {
+      throw new Error('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error('Invalid credentials');
+    }
+
+    res.send('Login successfully!!!');
+  } catch (error: any) {
+    res.status(400).send(error.message);
   }
 });
 
