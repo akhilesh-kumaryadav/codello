@@ -72,16 +72,30 @@ app.delete('/user', async (req: Request, res: Response) => {
   }
 });
 
-app.patch('/user', async (req: Request, res: Response) => {
-  const { userId } = req.body;
+app.patch('/user/:id', async (req: Request, res: Response) => {
+  const userId = req.params?.id;
+  const data = req.body;
   if (!userId) {
     res.status(400).send('User id is needed to update the user.');
   }
 
   try {
-    await Users.findByIdAndUpdate({ _id: userId }, req.body, {
+    const ALLOWED_FIELDS = ['firstName', 'lastName', 'age', 'gender'];
+    if (!Object.keys(data).every((key) => ALLOWED_FIELDS.includes(key))) {
+      throw new Error('Update not allowed with random fields.');
+    }
+
+    if (data.skills?.length > 10) {
+      throw new Error('Skills can have maximum 10 values.');
+    }
+
+    const isUpdated = await Users.findByIdAndUpdate({ _id: userId }, data, {
       runValidators: true,
     });
+    console.log({ isUpdated });
+    if (!isUpdated) {
+      throw new Error('User not found.');
+    }
 
     res.send('User updated successfully');
   } catch (error: any) {
