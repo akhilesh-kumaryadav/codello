@@ -1,6 +1,6 @@
 import validator from 'validator';
 
-import type { UserSchema } from '../models/collectionTypes/user';
+import type { UserDocument } from '../models/collectionTypes/user';
 import validateMandatoryFields from './validateMandatoryFields';
 
 const MANDATORY_FIELDS = {
@@ -25,7 +25,7 @@ const MANDATORY_FIELDS = {
 export default function signUpValidator({
   bodyParams,
 }: {
-  bodyParams: UserSchema;
+  bodyParams: UserDocument;
 }) {
   validateMandatoryFields({ data: bodyParams, MANDATORY_FIELDS });
 
