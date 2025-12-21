@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
 
 import connectCluster from './configs/database';
 import Users from './models/user/user';
@@ -11,7 +10,6 @@ import { userAuth } from './middlewares/auth';
 
 const app = express();
 const port = 592;
-const JWT_SECRET = 'akhilesh@HFT';
 
 app.use(express.json());
 app.use(cookieParser());
@@ -59,14 +57,12 @@ app.post('/login', async (req: Request, res: Response) => {
       throw new Error('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.verifyPassword(password);
     if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }
 
-    const token = await jwt.sign({ _id: user._id }, JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = await user.getJWT();
     res.cookie('token', token, { expires: new Date(Date.now() + 900000) });
 
     res.send('Login successfully!!!');

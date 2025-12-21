@@ -1,3 +1,5 @@
+import { Document } from 'mongoose';
+
 export type UserSchema = {
   firstName: string;
   lastName?: string;
@@ -8,4 +10,9 @@ export type UserSchema = {
   age: number;
 };
 
-// export type UserDocument = UserSchema & MongoDocument;
+export interface UserMethods {
+  getJWT(): Promise<string>;
+  verifyPassword(password: string): Promise<boolean>;
+}
+
+export type UserDocument = Document & UserSchema & UserMethods;

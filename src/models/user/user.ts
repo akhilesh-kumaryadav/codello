@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import validator from 'validator';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { UserDocument } from '../collectionTypes/user';
 
-const { Schema } = mongoose;
-
-const schema = new Schema(
+const schema = new Schema<UserDocument>(
   {
     firstName: {
       type: String,
@@ -68,4 +69,22 @@ const schema = new Schema(
   },
 );
 
-export default mongoose.model('User', schema);
+const JWT_SECRET = 'akhilesh@HFT';
+
+schema.methods.getJWT = async function () {
+  const user = this;
+
+  const token = await jwt.sign({ _id: user._id }, JWT_SECRET, {
+    expiresIn: '1h',
+  });
+
+  return token;
+};
+
+schema.methods.verifyPassword = async function (password: string) {
+  const user = this;
+
+  return bcrypt.compare(password, user.password);
+};
+
+export default mongoose.model<UserDocument>('User', schema);
