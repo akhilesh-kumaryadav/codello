@@ -1,26 +1,35 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
-export const adminAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log('Admin auth started...');
-  const token = 'xyz';
-  const comingToken = 'xyz';
-  const isAdminToken = token === comingToken;
+import Users from '../models/user/user';
 
-  if (!isAdminToken) {
-    res.status(401).send('Unauthorized admin user');
+const JWT_SECRET = 'akhilesh@HFT';
+
+export const userAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) {
+      throw new Error('Unauthorized.');
+    }
+
+    const decodedToken = (await jwt.verify(token, JWT_SECRET)) as {
+      _id: string;
+    };
+    const { _id } = decodedToken;
+
+    const user = await Users.findById(_id);
+    if (!user) {
+      throw new Error('Unauthorized.');
+    }
+
+    req.user = user;
+
+    next();
+  } catch (error: any) {
+    res.status(500).send(error.message ?? 'Internal Server Error.');
   }
-
-  next();
-};
-
-export const userAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log('User auth started...');
-  const token = 'xyz';
-  const isUserToken = token === 'xyz';
-
-  if (!isUserToken) {
-    res.status(401).send('Unauthorized user');
-  }
-
-  next();
 };
