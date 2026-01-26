@@ -64,4 +64,10 @@ route.post('/login', async (req: Request, res: Response) => {
   }
 });
 
+route.post('/logout', (req: Request, res: Response) => {
+  res
+    .cookie('token', null, { expires: new Date(Date.now()) })
+    .send('Logout Successfully.');
+});
+
 export default route;
