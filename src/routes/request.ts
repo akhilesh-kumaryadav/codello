@@ -60,4 +60,42 @@ route.post(
   },
 );
 
+route.post(
+  '/request/review/:status/:requestId',
+  userAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { status, requestId } = req.params;
+      const user = req.user as UserDocument;
+
+      if (!['accepted', 'rejected'].includes(status)) {
+        throw new Error('Invalid status of the request.');
+      }
+
+      const request = await Requests.findOne({
+        _id: requestId,
+        toUserId: user._id,
+        status: 'interested',
+      });
+      if (!request) {
+        throw new Error('Invalid request.');
+      }
+
+      request.set({ status });
+      request.save();
+
+      res.json({
+        status: true,
+        message: `${user.firstName} ${status}.`,
+        data: request,
+      });
+    } catch (error: any) {
+      res.json({
+        status: 400,
+        message: `Error in handling request: ` + error.message,
+      });
+    }
+  },
+);
+
 export default route;
