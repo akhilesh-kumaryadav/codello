@@ -5,6 +5,7 @@ const schema = new Schema<RequestDocument>(
   {
     fromUserId: {
       type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     toUserId: {
