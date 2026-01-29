@@ -90,6 +90,9 @@ route.get(
 route.get('/user/feed', userAuth, async (req: Request, res: Response) => {
   try {
     const user = req.user as UserDocument;
+    const page = Number(req.query.page) ?? 1;
+    const limit = Number(req.query.limit) ?? 2;
+    const skip = (page - 1) * limit;
 
     const connection = await Requests.find(
       {
@@ -117,7 +120,9 @@ route.get('/user/feed', userAuth, async (req: Request, res: Response) => {
         age: 1,
         photoUrl: 1,
       },
-    );
+    )
+      .skip(skip)
+      .limit(limit);
 
     res.json({
       status: 200,
