@@ -10,6 +10,7 @@ const schema = new Schema<RequestDocument>(
     },
     toUserId: {
       type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     status: {
