@@ -8,6 +8,7 @@ export type UserSchema = {
   gender: string;
   photoUrl?: string;
   age: number;
+  about: string;
 };
 
 export interface UserMethods {

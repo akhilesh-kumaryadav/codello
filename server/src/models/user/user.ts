@@ -63,6 +63,9 @@ const schema = new Schema<UserDocument>(
           `${props.value} is not a valid URL.`,
       },
     },
+    about: {
+      type: String,
+    },
   },
   {
     timestamps: true,

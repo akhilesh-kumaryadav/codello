@@ -45,12 +45,17 @@ route.patch('/profile/edit', userAuth, async (req: Request, res: Response) => {
     await user.save();
 
     res.json({
-      status: true,
-      message: `${user.firstName}, your profile updated successfully.`,
+      result: true,
+      status: 200,
+      message: `Profile updated successfully.`,
       data: user,
     });
   } catch (error: any) {
-    res.status(400).send(error.message ?? 'Something went wrong.');
+    res.json({
+      result: false,
+      status: error.status,
+      message: error.message ?? 'Something went wrong.',
+    });
   }
 });
 

@@ -28,6 +28,10 @@ export const EDITABLE_FIELDS = {
     key: 'photoUrl',
     label: 'Photo',
   },
+  about: {
+    key: 'about',
+    label: 'About',
+  },
 };
 
 export type EditableFieldTypes = keyof typeof EDITABLE_FIELDS;
@@ -39,7 +43,11 @@ export default function editProfileValidator({
 }) {
   validateEditableFields({ data: bodyParams, EDITABLE_FIELDS });
 
-  const { email, age, gender, photoUrl } = bodyParams;
+  const { firstName, email, age, gender, photoUrl } = bodyParams;
+
+  if (!firstName) {
+    throw new Error('First Name is required.');
+  }
 
   if (email && !validator.isEmail(email)) {
     throw new Error('Email address is not valid.');
