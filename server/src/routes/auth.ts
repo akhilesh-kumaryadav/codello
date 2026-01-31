@@ -40,12 +40,7 @@ route.post('/login', async (req: Request, res: Response) => {
   try {
     loginInValidator({ credentials: req.body });
 
-    const user = await Users.findOne(
-      { email },
-      {
-        password: 1,
-      },
-    );
+    const user = await Users.findOne({ email });
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -58,9 +53,12 @@ route.post('/login', async (req: Request, res: Response) => {
     const token = await user.getJWT();
     res.cookie('token', token, { expires: new Date(Date.now() + 900000) });
 
-    res.send('Login successfully!!!');
+    res.json({ status: 200, message: 'Login successfully!!!', data: user });
   } catch (error: any) {
-    res.status(400).send(error.message ?? 'Something went wrong.');
+    res.json({
+      status: 400,
+      message: error.message ?? 'Something went wrong.',
+    });
   }
 });
 
