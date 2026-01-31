@@ -36,7 +36,7 @@ const Feed = () => {
     <div className="flex flex-col items-center justify-center gap-4">
       {feed &&
         feed.map((user) => {
-          return <UserCard user={user} />;
+          return <UserCard user={user} key={user._id} />;
         })}
     </div>
   );
