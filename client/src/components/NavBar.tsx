@@ -1,9 +1,36 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../app/store";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
+import { AppError } from "../utils/AppError";
+import { removeUser } from "../app/features/userReducer";
+
+const { VITE_API_HOST } = import.meta.env;
 
 const Navbar = () => {
   const user = useSelector((store: RootState) => store.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        `${VITE_API_HOST}/logout`,
+        {},
+        { withCredentials: true },
+      );
+
+      if (!response.data.result) {
+        throw new AppError("Something went wrong while loging out", 500);
+      }
+
+      dispatch(removeUser(null));
+      return navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-1">
@@ -47,7 +74,9 @@ const Navbar = () => {
                 <a>Settings</a>
               </li>
               <li>
-                <a>Logout</a>
+                <Link to="/" onClick={handleLogout}>
+                  Logout
+                </Link>
               </li>
             </ul>
           </div>

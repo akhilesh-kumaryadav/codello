@@ -3,12 +3,15 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../app/features/userReducer";
 import { useNavigate } from "react-router";
+import { AppError } from "../utils/AppError";
 
 const Login = () => {
-  const [email, setEmail] = useState("nk@securities.com");
-  const [password, setPassword] = useState("Akhilesh@24");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("nk@securities.com");
+  const [password, setPassword] = useState("Akhilesh@24");
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
@@ -23,10 +26,14 @@ const Login = () => {
         },
       );
 
+      if (!response.data.result) {
+        throw new AppError(response.data.message, response.data.status);
+      }
+
       dispatch(addUser(response.data.data));
       return navigate("/feed");
     } catch (error: any) {
-      console.log({ error });
+      setError(error.message);
     }
   };
 
@@ -61,10 +68,11 @@ const Login = () => {
               type="email"
               placeholder="Email Address"
               value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </label>
-          <div className="validator-hint hidden">Enter valid email address</div>
+          {/* <div className="validator-hint hidden">Enter valid email address</div> */}
           <label className="input validator">
             <svg
               className="h-[1em] opacity-50"
@@ -85,20 +93,22 @@ const Login = () => {
             <input
               type="password"
               value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Password"
-              minLength={8}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              // minLength={8}
+              // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              // title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
           </label>
-          <p className="validator-hint hidden">
+          {/* <p className="validator-hint hidden">
             Must be more than 8 characters, including
             <br />
             At least one number <br />
             At least one lowercase letter <br />
             At least one uppercase letter
-          </p>
+          </p> */}
+          {error && <p className="text-red-200">{error}</p>}
           <div className="card-actions justify-center">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
