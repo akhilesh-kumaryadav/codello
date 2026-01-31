@@ -12,9 +12,20 @@ const route = express.Router();
 
 route.get('/profile/view', userAuth, async (req: Request, res: Response) => {
   try {
-    res.send(req.user);
+    res.json({
+      result: true,
+      status: 200,
+      message: 'User profile fetched successfully.',
+      data: {
+        user: req.user,
+      },
+    });
   } catch (error: any) {
-    res.status(400).send(error.message ?? 'Something went wrong.');
+    res.json({
+      result: false,
+      status: error.status ?? '400',
+      message: error.message ?? 'Something went wrong.',
+    });
   }
 });
 
@@ -43,40 +54,46 @@ route.patch('/profile/edit', userAuth, async (req: Request, res: Response) => {
   }
 });
 
-route.patch('/profile/password', userAuth, async(req: Request, res: Response) => {
-  try {
-    const {oldPassword, newPassword} = req.body;
-    if(!oldPassword || !newPassword) {
-      throw new Error('Both new and old password should be required.')
+route.patch(
+  '/profile/password',
+  userAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      if (!oldPassword || !newPassword) {
+        throw new Error('Both new and old password should be required.');
+      }
+
+      const user = req.user as UserDocument;
+
+      const isOldPasswordValid = await user.verifyPassword(oldPassword);
+      if (!isOldPasswordValid) {
+        throw new Error('Old password is not correct');
+      }
+
+      if (oldPassword === newPassword) {
+        throw new Error(
+          'New password must be different from previous password.',
+        );
+      }
+
+      if (!validator.isStrongPassword(newPassword)) {
+        throw new Error('New Password is not a strong password.');
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      user.set({ password: hashedNewPassword });
+      await user.save();
+
+      res.json({
+        status: true,
+        message: `${user.firstName}, your password changed successfully.`,
+      });
+    } catch (error: any) {
+      res.status(400).send(error.message ?? 'Something went wrong.');
     }
-
-    const user = req.user as UserDocument;
-
-    const isOldPasswordValid = await user.verifyPassword(oldPassword);
-    if(!isOldPasswordValid) {
-      throw new Error('Old password is not correct');
-    }
-
-    if(oldPassword === newPassword) {
-      throw new Error("New password must be different from previous password.")
-    }
-
-    if(!validator.isStrongPassword(newPassword)) {
-      throw new Error('New Password is not a strong password.');
-    }
-
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-
-    user.set({password: hashedNewPassword});
-    await user.save();
-
-    res.json({
-      status: true,
-      message: `${user.firstName}, your password changed successfully.`
-    })
-  } catch(error: any) {
-    res.status(400).send(error.message ?? 'Something went wrong.')
-  }
-})
+  },
+);
 
 export default route;

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import Users from '../models/user/user';
+import { AppError } from '../utils/AppError';
 
 const JWT_SECRET = 'akhilesh@HFT';
 
@@ -13,7 +14,7 @@ export const userAuth = async (
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error('Unauthorized.');
+      throw new AppError('Unauthorized', 401);
     }
 
     const decodedToken = (await jwt.verify(token, JWT_SECRET)) as {
@@ -23,13 +24,17 @@ export const userAuth = async (
 
     const user = await Users.findById(_id);
     if (!user) {
-      throw new Error('Unauthorized.');
+      throw new AppError('Unauthorized', 401);
     }
 
     req.user = user;
 
     next();
   } catch (error: any) {
-    res.status(500).send(error.message ?? 'Internal Server Error.');
+    res.json({
+      result: false,
+      status: error.status ?? '400',
+      message: error.message ?? 'Internal Server Error.',
+    });
   }
 };
