@@ -1,14 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addUser } from "../app/features/userReducer";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [email, setEmail] = useState("nk@securities.com");
   const [password, setPassword] = useState("Akhilesh@24");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:592/login",
+        `${import.meta.env.VITE_API_HOST}/login`,
         {
           email,
           password,
@@ -17,7 +22,9 @@ const Login = () => {
           withCredentials: true,
         },
       );
-      console.dir({ response }, { depth: null });
+
+      dispatch(addUser(response.data.data));
+      return navigate("/feed");
     } catch (error: any) {
       console.log({ error });
     }
