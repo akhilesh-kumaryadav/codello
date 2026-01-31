@@ -125,6 +125,7 @@ route.get('/user/feed', userAuth, async (req: Request, res: Response) => {
       .limit(limit);
 
     res.json({
+      result: true,
       status: 200,
       message: 'Feeds fetched successfully.',
       length: feedUsers.length,
@@ -132,8 +133,9 @@ route.get('/user/feed', userAuth, async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.json({
-      status: 400,
-      message: 'Error in fetching the feed section.',
+      result: false,
+      status: error.status ?? 400,
+      message: error.message ?? 'Error in fetching the feed section.',
     });
   }
 });
