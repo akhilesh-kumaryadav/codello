@@ -54,6 +54,7 @@ route.get(
           'firstName',
           'lastName',
           'gender',
+          'about',
           'photoUrl',
           'age',
         ])
@@ -61,6 +62,7 @@ route.get(
           'firstName',
           'lastName',
           'gender',
+          'about',
           'photoUrl',
           'age',
         ]);
@@ -119,6 +121,7 @@ route.get('/user/feed', userAuth, async (req: Request, res: Response) => {
         gender: 1,
         age: 1,
         photoUrl: 1,
+        about: 1,
       },
     )
       .skip(skip)
