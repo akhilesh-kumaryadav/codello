@@ -9,3 +9,4 @@
 9. Redux toolkit - store, provider, useDispatch, redux devTool, useSelector,
 10. useNaviagate
 11. .env, .env.devolopment, .env.production
+12. <strictMode> makes 2 api call in dev for checking if rendering is wokring fine or not, but on production it will make only 1 api call
