@@ -14,10 +14,13 @@ route.get(
     try {
       const user = req.user as UserDocument;
 
-      const requestRecieved = await Requests.find({
-        toUserId: user._id,
-        status: 'interested',
-      }).populate('fromUserId', [
+      const requestRecieved = await Requests.find(
+        {
+          toUserId: user._id,
+          status: 'interested',
+        },
+        { _id: 1 },
+      ).populate('fromUserId', [
         'firstName',
         'lastName',
         'gender',
@@ -25,16 +28,11 @@ route.get(
         'age',
         'about',
       ]);
-
-      const requestRecievedData = requestRecieved.map(
-        (request) => request.fromUserId,
-      );
-
       res.json({
         result: true,
         status: 200,
         message: `Request Received.`,
-        data: requestRecievedData,
+        data: requestRecieved,
       });
     } catch (error: any) {
       res.json({
