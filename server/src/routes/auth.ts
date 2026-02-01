@@ -12,8 +12,7 @@ route.post('/signup', async (req: Request, res: Response) => {
   try {
     signUpValidator({ bodyParams: req.body });
 
-    const { firstName, lastName, email, password, gender, age, photoUrl } =
-      req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -22,16 +21,23 @@ route.post('/signup', async (req: Request, res: Response) => {
       lastName,
       email,
       password: hashedPassword,
-      gender,
-      age,
-      photoUrl,
     });
 
-    await user.save();
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
 
-    res.send('User Added To the database.');
+    res.cookie('token', token, { expires: new Date(Date.now() + 90000) }).json({
+      result: true,
+      status: 201,
+      message: 'User Added To the database.',
+      data: savedUser,
+    });
   } catch (error: any) {
-    res.status(400).send('Error in saving the user: ' + error.message);
+    res.json({
+      result: false,
+      status: error.status ?? 400,
+      message: error.message ?? 'Something went wrong.',
+    });
   }
 });
 

@@ -5,19 +5,23 @@ import { addUser } from "../app/features/userReducer";
 import { Link, useNavigate } from "react-router";
 import { AppError } from "../utils/AppError";
 
-const Login = () => {
+const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_HOST}/login`,
+        `${import.meta.env.VITE_API_HOST}/signup`,
         {
+          firstName,
+          lastName,
           email,
           password,
         },
@@ -25,13 +29,13 @@ const Login = () => {
           withCredentials: true,
         },
       );
-
+      console.log({ response });
       if (!response.data.result) {
         throw new AppError(response.data.message, response.data.status);
       }
 
       dispatch(addUser(response.data.data));
-      return navigate("/feed");
+      return navigate("/profile");
     } catch (error: any) {
       setError(error.message);
     }
@@ -60,6 +64,55 @@ const Login = () => {
                 fill="none"
                 stroke="currentColor"
               >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </g>
+            </svg>
+            <input
+              type="text"
+              required
+              placeholder="First Name"
+              onChange={(e) => setFirstName(e.target.value)}
+              value={firstName}
+            />
+          </label>
+          <label className="input validator">
+            <svg
+              className="h-[1em] opacity-50"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2.5"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </g>
+            </svg>
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </label>
+          <label className="input validator">
+            <svg
+              className="h-[1em] opacity-50"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2.5"
+                fill="none"
+                stroke="currentColor"
+              >
                 <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </g>
@@ -72,7 +125,6 @@ const Login = () => {
               required
             />
           </label>
-          {/* <div className="validator-hint hidden">Enter valid email address</div> */}
           <label className="input validator">
             <svg
               className="h-[1em] opacity-50"
@@ -96,26 +148,16 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Password"
-              // minLength={8}
-              // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              // title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
           </label>
-          {/* <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p> */}
           {error && <p className="text-red-200">{error}</p>}
           <div className="card-actions justify-center">
-            <button className="btn btn-primary" onClick={handleLogin}>
-              Login
+            <button className="btn btn-primary" onClick={handleSignUp}>
+              Sign Up
             </button>
           </div>
           <div>
-            <Link to="/signup">Not registered? Go to sign up.</Link>
+            <Link to="/login">Already registered? Go to login page.</Link>
           </div>
         </div>
       </div>
@@ -123,4 +165,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
