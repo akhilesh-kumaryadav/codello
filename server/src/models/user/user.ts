@@ -44,7 +44,6 @@ const schema = new Schema<UserDocument>(
     },
     gender: {
       type: String,
-      required: [true, 'Gender is required.'],
       validate: {
         validator: (value: string) => {
           return ['male', 'female', 'others'].includes(value);
