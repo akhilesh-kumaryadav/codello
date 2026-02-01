@@ -23,17 +23,26 @@ route.get(
         'gender',
         'photoUrl',
         'age',
+        'about',
       ]);
 
+      const requestRecievedData = requestRecieved.map(
+        (request) => request.fromUserId,
+      );
+
       res.json({
-        status: true,
+        result: true,
+        status: 200,
         message: `Request Received.`,
-        data: requestRecieved,
+        data: requestRecievedData,
       });
     } catch (error: any) {
       res.json({
-        status: 400,
-        message: `Error in getting the request received: ${error.message}`,
+        result: false,
+        status: error.status ?? 400,
+        message:
+          error.message ??
+          `Error in getting the request received: ${error.message}`,
       });
     }
   },
