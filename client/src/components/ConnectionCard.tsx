@@ -1,6 +1,6 @@
 const ConnectionsCard = ({ connection }) => {
   return (
-    <li className="list-row">
+    <li className="list-row bg-base-200">
       <div>
         <img className="size-10 rounded-box" src={connection.photoUrl} />
       </div>
