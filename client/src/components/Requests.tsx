@@ -46,7 +46,13 @@ const Requests = () => {
           Your Requests
         </li>
         {requests.map((request) => {
-          return <RequestCard request={request} key={requests._id} />;
+          return (
+            <RequestCard
+              request={request.fromUserId}
+              requestId={request._id}
+              key={requests._id}
+            />
+          );
         })}
       </ul>
     </div>
