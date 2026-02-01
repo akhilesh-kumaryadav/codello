@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AppError } from "../utils/AppError";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../app/features/feedReducer";
 import type { RootState } from "../app/store";
@@ -11,6 +11,9 @@ const { VITE_API_HOST } = import.meta.env;
 const Feed = () => {
   const feed = useSelector((store: RootState) => store.feed);
   const dispatch = useDispatch();
+
+  const [toast, setToast] = useState("");
+  const [error, setError] = useState("");
 
   const fetchFeed = async () => {
     try {
@@ -32,13 +35,46 @@ const Feed = () => {
     fetchFeed();
   }, []);
 
+  if (!feed) {
+    return;
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4 my-10">
-      {feed &&
-        feed.map((user) => {
-          return <UserCard user={user} key={user._id} />;
-        })}
-    </div>
+    <>
+      {error && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-error">
+            <span>{error}</span>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>{toast}</span>
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col items-center justify-center gap-4 my-10">
+        {feed &&
+          feed.map((user) => {
+            return (
+              <UserCard
+                user={user}
+                key={user._id}
+                onSuccess={(msg) => {
+                  (setToast(msg), setTimeout(() => setToast(""), 3000));
+                }}
+                onError={(msg) => {
+                  (setError(msg), setTimeout(() => setError(""), 3000));
+                }}
+              />
+            );
+          })}
+        {!feed.length && <h2>No new user found.</h2>}
+      </div>
+    </>
   );
 };
 
