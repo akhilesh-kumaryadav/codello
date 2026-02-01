@@ -5,7 +5,11 @@ export const feedSlice = createSlice({
   initialState: null,
   reducers: {
     addFeed: (state, action) => action.payload,
-    removeFeed: (state, action) => null,
+    removeFeed: (state, action) => {
+      const newState = state.filter((feed) => feed._id !== action.payload);
+
+      return newState;
+    },
   },
 });
 

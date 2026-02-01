@@ -160,6 +160,7 @@ const Profile = () => {
           <div>
             <UserCard
               user={{ firstName, lastName, age, gender, about, photoUrl }}
+              preview={true}
             />
           </div>
         </div>

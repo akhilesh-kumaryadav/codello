@@ -28,6 +28,7 @@ route.get(
         'age',
         'about',
       ]);
+
       res.json({
         result: true,
         status: 200,

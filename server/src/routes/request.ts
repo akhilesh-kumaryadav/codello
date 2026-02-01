@@ -48,13 +48,15 @@ route.post(
           : `${fromUser.firstName} ignored ${toUser.firstName}`;
 
       res.json({
-        status: true,
+        result: true,
+        status: 200,
         message: responseMessage,
       });
     } catch (error: any) {
       res.json({
-        status: 400,
-        message: `Error in handling request: ` + error.message,
+        result: false,
+        status: error.status ?? 400,
+        message: error.message ?? 'Something went wrong.',
       });
     }
   },

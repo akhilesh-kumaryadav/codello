@@ -1,5 +1,32 @@
-const UserCard = ({ user }) => {
+import axios from "axios";
+import { AppError } from "../utils/AppError";
+import { useDispatch } from "react-redux";
+import { removeFeed } from "../app/features/feedReducer";
+
+const { VITE_API_HOST } = import.meta.env;
+
+const UserCard = ({ user, onSuccess, onError, preview }) => {
   const { firstName, lastName, age, gender, about, photoUrl } = user;
+  const dispatch = useDispatch();
+
+  const handleFeedReview = async (status: String) => {
+    try {
+      const response = await axios.post(
+        `${VITE_API_HOST}/request/send/${status}/${user._id}`,
+        {},
+        { withCredentials: true },
+      );
+
+      if (!response.data.result) {
+        throw new AppError(response.data.message, response.data.status);
+      }
+
+      onSuccess(response.data.message);
+      dispatch(removeFeed(user._id));
+    } catch (error: any) {
+      onError(error.message);
+    }
+  };
 
   return (
     <div className="card bg-base-300 w-96 shadow-sm">
@@ -11,10 +38,22 @@ const UserCard = ({ user }) => {
         <p>Age: {age}</p>
         <p className="capitalize">Gender: {gender}</p>
         <p>{about}</p>
-        <div className="card-actions">
-          <button className="btn btn-primary">Ignore</button>
-          <button className="btn btn-secondary">Interested</button>
-        </div>
+        {!preview && (
+          <div className="card-actions">
+            <button
+              className="btn btn-primary"
+              onClick={() => handleFeedReview("ignored")}
+            >
+              Ignore
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => handleFeedReview("interested")}
+            >
+              Interested
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
