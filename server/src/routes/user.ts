@@ -76,14 +76,16 @@ route.get(
       });
 
       res.json({
+        result: true,
         status: 200,
         message: 'Connections fetched successfully.',
         data: connectionsData,
       });
     } catch (error: any) {
       res.json({
-        status: 400,
-        message: `Error in getting the connections.`,
+        result: false,
+        status: error.status ?? 400,
+        message: error.message ?? `Error in getting the connections.`,
       });
     }
   },
