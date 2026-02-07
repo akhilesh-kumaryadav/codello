@@ -13,7 +13,11 @@ const port = 592;
 
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: [
+      'http://localhost:5173',
+      'http://43.205.98.172',
+      'http://43.205.98.172:5173',
+    ],
     credentials: true,
   }),
 );
