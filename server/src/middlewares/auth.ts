@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import Users from '../models/user/user';
 import { AppError } from '../utils/AppError';
 
-const JWT_SECRET = 'akhilesh@HFT';
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const userAuth = async (
   req: Request,
