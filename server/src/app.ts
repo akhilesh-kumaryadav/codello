@@ -9,7 +9,7 @@ import requestRouter from './routes/request';
 import userRouter from './routes/user';
 
 const app = express();
-const port = 592;
+const port = 3000;
 
 app.use(
   cors({
@@ -33,7 +33,7 @@ connectCluster()
   .then(() => {
     console.log('Database connection established.');
     app.listen(port, () => {
-      console.log('Codello server is up and running at port - ', `${port}`);
+      console.log('Codello server is up and running at port - ', port);
     });
   })
   .catch((error) => {
