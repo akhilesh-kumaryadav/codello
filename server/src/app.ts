@@ -1,6 +1,9 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 import connectCluster from './configs/database';
 import authRouter from './routes/auth';
@@ -9,7 +12,8 @@ import requestRouter from './routes/request';
 import userRouter from './routes/user';
 
 const app = express();
-const port = 592;
+
+const port = process.env.PORT;
 
 app.use(
   cors({
@@ -33,7 +37,7 @@ connectCluster()
   .then(() => {
     console.log('Database connection established.');
     app.listen(port, () => {
-      console.log('Codello server is up and running at port - ', `${port}`);
+      console.log(`Codello server is up and running at port - ${port}`);
     });
   })
   .catch((error) => {
