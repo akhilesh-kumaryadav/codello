@@ -14,7 +14,7 @@ import userRouter from './routes/user';
 const app = express();
 
 const port = process.env.PORT;
-
+console.log({ port });
 app.use(
   cors({
     origin: [
