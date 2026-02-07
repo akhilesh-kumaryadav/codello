@@ -17,12 +17,7 @@ const port = process.env.PORT;
 console.log({ port });
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://43.205.98.172',
-      'http://43.205.98.172:5173',
-      'http://43.205.98.172:592',
-    ],
+    origin: '*',
     credentials: true,
   }),
 );
