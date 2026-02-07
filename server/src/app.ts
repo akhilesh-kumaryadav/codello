@@ -37,7 +37,7 @@ app.use('/', userRouter);
 connectCluster()
   .then(() => {
     console.log('Database connection established.');
-    app.listen(Number(port), () => {
+    app.listen(Number(port), '0.0.0.0', () => {
       console.log(`Codello server is up and running at port - ${port}`);
     });
   })
