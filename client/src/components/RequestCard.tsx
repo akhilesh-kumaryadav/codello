@@ -1,14 +1,20 @@
 import axios from "axios";
 import { AppError } from "../utils/AppError";
 import { useDispatch } from "react-redux";
-import { removeRequest } from "../app/features/requestsReducer";
+import { removeRequest, type Request } from "../app/features/requestsReducer";
 
 const { VITE_API_HOST } = import.meta.env;
 
-const RequestCard = ({ request, requestId }) => {
+const RequestCard = ({
+  request,
+  requestId,
+}: {
+  request: Request;
+  requestId: string;
+}) => {
   const dispatch = useDispatch();
 
-  const handleReviewRequest = async (status) => {
+  const handleReviewRequest = async (status: string) => {
     try {
       const response = await axios.post(
         `${VITE_API_HOST}/request/review/${status}/${requestId}`,

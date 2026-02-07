@@ -48,9 +48,10 @@ const Requests = () => {
         {requests.map((request) => {
           return (
             <RequestCard
+              // @ts-expect-error
               request={request.fromUserId}
               requestId={request._id}
-              key={requests._id}
+              key={request._id}
             />
           );
         })}

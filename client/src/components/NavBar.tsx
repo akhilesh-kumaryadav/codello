@@ -24,7 +24,7 @@ const Navbar = () => {
         throw new AppError("Something went wrong while loging out", 500);
       }
 
-      dispatch(removeUser(null));
+      dispatch(removeUser());
       return navigate("/login");
     } catch (error) {
       console.log(error);
