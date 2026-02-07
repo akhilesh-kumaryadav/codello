@@ -1,11 +1,26 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
+export type Connection = {
+  _id: string;
+  firstName: string;
+  lastName?: string;
+  email: string;
+  password: string;
+  gender: string;
+  photoUrl?: string;
+  age: number;
+  about: string;
+};
+
+const initialState: Connection[] = [];
 
 export const connectionsSlice = createSlice({
   name: "connections",
-  initialState: null,
+  initialState: initialState,
   reducers: {
-    addConnections: (state, action) => action.payload,
-    removeConnections: (state, action) => null,
+    addConnections: (_state, action: PayloadAction<Connection[]>) =>
+      action.payload,
+    removeConnections: (_state, _action: PayloadAction<string>) => [],
   },
 });
 

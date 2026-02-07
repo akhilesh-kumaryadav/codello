@@ -1,4 +1,6 @@
-const ConnectionsCard = ({ connection }) => {
+import type { Connection } from "../app/features/connectionsReducer";
+
+const ConnectionsCard = ({ connection }: { connection: Connection }) => {
   return (
     <li className="list-row bg-base-200">
       <div>

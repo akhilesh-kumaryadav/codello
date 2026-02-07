@@ -2,10 +2,21 @@ import axios from "axios";
 import { AppError } from "../utils/AppError";
 import { useDispatch } from "react-redux";
 import { removeFeed } from "../app/features/feedReducer";
+import type { User } from "../app/features/userReducer";
 
 const { VITE_API_HOST } = import.meta.env;
 
-const UserCard = ({ user, onSuccess, onError, preview }) => {
+const UserCard = ({
+  user,
+  onSuccess,
+  onError,
+  preview = false,
+}: {
+  user: User;
+  onSuccess: (msg: string) => void;
+  onError: (msg: string) => void;
+  preview?: boolean;
+}) => {
   const { firstName, lastName, age, gender, about, photoUrl } = user;
   const dispatch = useDispatch();
 

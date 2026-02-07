@@ -63,10 +63,10 @@ const Feed = () => {
               <UserCard
                 user={user}
                 key={user._id}
-                onSuccess={(msg) => {
+                onSuccess={(msg: string) => {
                   (setToast(msg), setTimeout(() => setToast(""), 3000));
                 }}
-                onError={(msg) => {
+                onError={(msg: string) => {
                   (setError(msg), setTimeout(() => setError(""), 3000));
                 }}
               />

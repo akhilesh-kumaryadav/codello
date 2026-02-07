@@ -14,7 +14,7 @@ const Profile = () => {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState(18);
   const [gender, setGender] = useState("");
   const [about, setAbout] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
@@ -57,11 +57,11 @@ const Profile = () => {
     }
 
     setFirstName(user.firstName);
-    setLastName(user.lastName);
-    setAge(user.age);
+    setLastName(user.lastName ?? "");
+    setAge(user.age ?? 18);
     setGender(user.gender);
     setAbout(user.about);
-    setPhotoUrl(user.photoUrl);
+    setPhotoUrl(user.photoUrl ?? "");
   }, [user]);
 
   return (
@@ -111,7 +111,7 @@ const Profile = () => {
                   className="input w-full"
                   placeholder="Type here"
                   value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  onChange={(e) => setAge(Number(e.target.value))}
                 />
               </fieldset>
               <fieldset className="fieldset justify-center">
@@ -120,6 +120,7 @@ const Profile = () => {
                   defaultValue="Pick a browser"
                   className="select w-full"
                   value={gender}
+                  // @ts-expect-error
                   onChange={(e) => setGender(e.target.value.to)}
                 >
                   <option disabled={true}>Select Gender</option>
@@ -159,8 +160,11 @@ const Profile = () => {
           </div>
           <div>
             <UserCard
+              // @ts-expect-error
               user={{ firstName, lastName, age, gender, about, photoUrl }}
               preview={true}
+              onError={() => null}
+              onSuccess={() => null}
             />
           </div>
         </div>
