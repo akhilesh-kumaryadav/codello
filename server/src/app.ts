@@ -14,10 +14,10 @@ import userRouter from './routes/user';
 const app = express();
 
 const port = process.env.PORT;
-console.log({ port });
+
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     credentials: true,
   }),
 );
@@ -32,7 +32,7 @@ app.use('/', userRouter);
 connectCluster()
   .then(() => {
     console.log('Database connection established.');
-    app.listen(Number(port), '0.0.0.0', () => {
+    app.listen(Number(port), () => {
       console.log(`Codello server is up and running at port - ${port}`);
     });
   })
