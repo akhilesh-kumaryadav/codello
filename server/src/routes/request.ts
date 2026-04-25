@@ -52,7 +52,7 @@ route.post(
         body: `You got a new connection request from ${fromUser.firstName}`,
         subject: 'New Connection Request Received',
       });
-
+      console.dir({ emailResponse }, { depth: null });
       res.json({
         result: true,
         status: 200,
