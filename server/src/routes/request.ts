@@ -3,6 +3,7 @@ import { userAuth } from '../middlewares/auth';
 import Users from '../models/user/user';
 import Requests from '../models/request/request';
 import { UserDocument } from '../models/collectionTypes/user';
+import sendEmail from '../utils/amazonSES/sendEmail';
 
 const route = express.Router();
 
@@ -46,6 +47,11 @@ route.post(
         status === 'interested'
           ? `${fromUser.firstName} is interested in ${toUser.firstName}`
           : `${fromUser.firstName} ignored ${toUser.firstName}`;
+
+      const emailResponse = await sendEmail.run({
+        body: `You got a new connection request from ${fromUser.firstName}`,
+        subject: 'New Connection Request Received',
+      });
 
       res.json({
         result: true,
